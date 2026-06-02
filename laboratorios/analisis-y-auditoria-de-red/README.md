@@ -1,53 +1,47 @@
-# 📑 [PORTAFOLIO] Auditoría de Seguridad Perimetral: Análisis de Obsolescencia en Dispositivos de Borde (ISP)
-Analista: Juan Cadena
+# 📑 [PORTFOLIO] Perimeter Security Audit: Obsolescence Analysis on Edge Devices (ISP)
+**Analyst:** Juan Cadena  
+**Date of Analysis:** May 31, 2026  
+**Project Type:** Vulnerability Management / Infrastructure Audit  
+**Environment:** Local Area Network (Home Lab)  
 
-Fecha del Análisis: 31 de Mayo de 2026
+## 1. Objective
+Perform a comprehensive discovery and vulnerability assessment within a local area network (LAN), focusing specifically on the edge router. The goal is identify potential security breaches, obsolete firmware versions, and evaluate the overall exposure risk against external cyber threats.
 
-Tipo de Proyecto: Gestión de Vulnerabilidades / Auditoría de Infraestructura
+## 2. Methodology & Telemetry Collection
+To extract the technical specifications of the device without causing any service disruption, the following reconnaissance procedure was conducted:
 
-Entorno: Red Local (Laboratorio Casero)
-
-## 1. Objetivo del Proyecto (Objective)
-Levantamiento y análisis de vulnerabilidades en red LAN con enfoque en el router, con el fin de identificar posibles brechas de seguridad, firmwares obsoletos y evaluar el riesgo de exposición ante amenazas externas.
-
-## 2. Metodología y Recopilación de Telemetría (Methodology)
-
-Para obtener los datos técnicos del dispositivo sin interrumpir el servicio, se aplicó el siguiente procedimiento de reconocimiento (Reconnaissance):
-
-1. **Identificación de la Puerta de Enlace:** Se utilizó la interfaz de línea de comandos de Windows (CMD) ejecutando el comando `ipconfig` para localizar la IP privada del router.
+1. **Gateway Identification:** The Windows Command Prompt (CMD) was utilized to execute the `ipconfig` command in order to locate the router's private IP address (Default Gateway).
 
 <img width="1043" height="741" alt="image" src="https://github.com/user-attachments/assets/6331b203-1b7a-483c-841e-7d550ba95504" />
 
-2. **Extracción de Información en la Consola Web:** Se ingresó la IP privada en el navegador web, accediendo directamente al panel de estado del dispositivo provisto por el ISP para extraer los datos de manufactura.
+2. **Web Console Data Extraction:** The private IP address was accessed via a web browser to log into the device status panel provided by the ISP, allowing the collection of manufacturing and system data.
 
 <img width="1425" height="903" alt="image" src="https://github.com/user-attachments/assets/33fdd0d2-5735-47ea-8a4e-c6d52807b3e3" />
 
-   * **Dispositivo:** Módem/Router (ISP).
-   * **Versión de Hardware:** `3.35.1`
-   * **Versión de Firmware Activa:** `9.36.2020`
+* **Device Type:** Modem/Router (ISP Property).
+* **Hardware Version:** `3.35.1`
+* **Active Firmware Version:** `9.36.2020`
 
-## 3. Análisis de Riesgo y Vulnerabilidades (Risk Assessment)
+## 3. Risk & Vulnerability Assessment
+After analyzing the active software version identifiers, the following critical security findings were determined:
 
-Tras analizar los identificadores de versiones, se determinaron los siguientes hallazgos críticos de seguridad:
+* **Critical System Obsolescence (Firmware):** The detected firmware version (`9.36.2020`) indicates that the router's internal operating system was last compiled or updated in **2020**. Operating in the year **2026**, this device has accumulated **6 years without receiving security patches**.
+* **Hardware Lifecycle Risk:** The physical hardware revision `3.35.1` suggests an estimated device age of 6 to 8 years (Pre-pandemic). There is a high probability that the manufacturer has declared this model as **End of Life (EoL)**, permanently ceasing technical support and vulnerability remediation.
 
-* **Obsolescencia Crítica del Sistema (Firmware):** La versión de firmware detectada (`9.36.2020`) indica que el sistema operativo interno del router fue compilado o actualizado por última vez en el año **2020**. Al encontrarnos en el año **2026**, el dispositivo acumula **6 años sin recibir parches de seguridad**.
-* **Ciclo de Vida del Hardware:** La revisión física `3.35.1` estima una antigüedad del componente de hardware de entre 6 y 8 años (Pre-pandemia). Existe un alto riesgo de que el fabricante haya declarado este modelo como **End of Life (EoL)**, cesando el soporte técnico definitivo.
+### Potential Impact & Attack Vectors:
 
-### Impacto Potencial en la Seguridad (Vectores de Ataque):
+1. **Public CVE Exploitation & Remote Code Execution (RCE):** An external threat actor could scan the WAN interface (public IP) of the router. Upon detecting the unpatched 2020 version, they could deploy public exploits to achieve **Remote Code Execution (RCE)** or trigger a Denial of Service (DoS). Due to the lack of memory validation in obsolete firmware, targeted malicious requests could overwhelm the internal CPU, freezing security protocols into a *Fail-Open* state. This could allow unauthorized port forwarding or the execution of a *Reverse Shell* to gain full root control of the device from the internet.
 
-1. **Explotación de CVEs Públicos e Inyección de Código (RCE):** Un atacante externo podría escanear el puerto WAN (IP pública) del router y, al detectar la versión de 2020, ejecutar exploits públicos para lograr la **Ejecución Remota de Código (RCE)** o provocar una Denegación de Servicio (DoS). Debido a la falta de validación en la memoria de un firmware obsoleto, solicitudes maliciosas dirigidas podrían sobrecargar el procesador, congelando los protocolos de seguridad internos (*Fail-Open*). Esto permitiría forzar la apertura de puertos no autorizados o el despliegue de una *Reverse Shell* para tomar el control total del dispositivo desde el exterior.
+2. **Absence of Modern Encryption Standards:** Legacy hardware often lacks the processing power and software capabilities required to support modern wireless security protocols, such as WPA3. This restricts the local network to WPA2, leaving it exposed to deauthentication attacks and handshake capturing for offline password cracking.
 
-2. **Falta de Cifrado Moderno:** Hardware de esta antigüedad suele carecer de soporte para protocolos de seguridad inalámbrica modernos (como WPA3), limitando la red local a WPA2, el cual es vulnerable a ataques de desautenticación y captura de *handshakes* para el descifrado de contraseñas.
+3. **Resource Exhaustion via Brute Force:** Legacy hardware processors are highly susceptible to saturation from automated traffic. A brute-force attack or automated vulnerability scanning would quickly deplete the modem's CPU and RAM, resulting in a total crash of the local network.
 
-3. **Agobio de Procesamiento por Fuerza Bruta:** El procesador de un hardware antiguo es altamente susceptible a la saturación por tráfico masivo. Un ataque automatizado de denegación de servicio o intentos repetidos de acceso agotarían la CPU y la RAM del módem, provocando la caída total de la red local.
+## 4. Proposed Mitigation Plan
+As a security analyst, the following high-priority actions are recommended to secure the perimeter infrastructure:
 
-## 4. Plan de Remediación Propuesto (Mitigation Plan)
+1. **Management Interface Hardening:** Verify and completely disable the "WAN Remote Management" feature within the router settings. This ensures that the device's web console is exclusively accessible from the local network (LAN), making it invisible to automated internet-wide port scans.
 
-Como analista de seguridad, se proponen las siguientes acciones prioritarias para mitigar los riesgos identificados en la infraestructura perimetral:
+2. **Enforced Update or Asset Replacement:** * Coordinate with the service provider's (ISP) technical support to verify if there is a newer, signed firmware patch released after version `9.36.2020` that is compatible with hardware revision `3.35.1`.
+   * If the manufacturer confirms the device is *End of Life (EoL)*, request an immediate physical replacement of the modem for a current model with active security support.
 
-1. **Aislamiento de la Interfaz de Gestión (Hardening):** Verificar y desactivar por completo la opción de "Administración Remota WAN" dentro de la configuración del router. Esto garantiza que la consola web del dispositivo solo sea accesible desde la red local (LAN) y permanezca totalmente invisible ante escaneos de puertos automatizados desde el internet público.
-
-2. **Actualización Forzada o Reemplazo del Activo:** * Coordinar con el soporte técnico del proveedor de servicios (ISP) para validar si existe un parche de firmware firmado posterior a la versión `9.36.2020` que sea compatible con la revisión de hardware `3.35.1`.
-   * En caso de confirmarse que el fabricante ha clasificado el dispositivo como *End of Life* (EoL), se debe gestionar el reemplazo físico obligatorio del módem por un modelo vigente con soporte de seguridad activo.
-
-3. **Segmentación y Perímetro Dedicado (Modo Puente):** Como mejor práctica de arquitectura segura, se recomienda configurar el módem del ISP en **Modo Puente (Bridge)**. Esto delega la función de enrutamiento y la inspección de tráfico a un Firewall perimetral dedicado de código abierto (como *pfSense* o *OPNsense*), permitiendo un control estricto sobre las conexiones entrantes y bloqueando de manera proactiva cualquier intento de tráfico saliente no autorizado (*Reverse Shells*).
+3. **Network Segmentation & Dedicated Perimeter (Bridge Mode):** Following architectural best practices, it is highly recommended to configure the ISP modem into **Bridge Mode**. This delegates all routing and packet inspection duties to a dedicated, open-source perimeter Firewall (such as *pfSense* or *OPNsense*). This implementation ensures strict control over inbound connections and proactively intercepts unauthorized outbound traffic (*Reverse Shells*).
