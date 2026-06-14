@@ -59,10 +59,5 @@ To mitigate this threat across an enterprise infrastructure, a behavioral detect
 
 ---
 
-## Lab Validation
-<img width="1192" height="857" alt="image" src="https://github.com/user-attachments/assets/d6adeab0-a19f-419e-ba8b-e05fb9e7c86b" />
-
----
-
 ## Conclusion
 This laboratory highlights why modern SOC teams cannot rely solely on traditional antivirus signatures or file extensions. Combining terminal-based file deconstruction with OSINT tools like VirusTotal allows analysts to trace the root behavior of an exploit, enabling the creation of robust parent-child process detection rules to neutralize threats in real time.
